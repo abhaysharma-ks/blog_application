@@ -1,6 +1,7 @@
 const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const client = require("../config/redis");
 
 const register = async (req, res) => {
   try {
@@ -89,10 +90,10 @@ const logout = async (req, res) => {
       return res.status(400).json({ message: "No token found" });
     }
     
-    await client.setEx(`blacklist:${token}`,86400,"true")
-
-    res.status(200).json({ message: "Logged out successfully" });
+    await client.set(`blacklist:${token}`,"true","EX",86400)
+    
     res.clearCookie("token");
+    res.status(200).json({ message: "Logged out successfully" });
 
   } catch (error) {
     res.status(500).json({ error: error.message });

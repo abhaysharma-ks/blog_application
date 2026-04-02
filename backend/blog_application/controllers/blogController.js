@@ -107,7 +107,7 @@ const edit_blog=async(req,res)=>{
     if (content) blog.content = content;
 
     await blog.save();
-    await client.del("approved_blogs")
+    // await client.del("approved_blogs") 
 
     res.status(200).json({
       message: "Blog updated successfully",
