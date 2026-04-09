@@ -4,13 +4,16 @@ import "./index.css";
 import App from "./App.jsx";
 import { AuthProvider } from "./context/AuthContext.jsx";
 import { PostProvider } from "./context/PostContext.jsx";
+import { AdminProvider } from "./context/AdminContext.jsx";
 
 createRoot(document.getElementById("root")).render(
   <AuthProvider>
+    <AdminProvider>
     <PostProvider>
       <App />
       
     
     </PostProvider>
+    </AdminProvider>
   </AuthProvider>,
 );

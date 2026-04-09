@@ -47,12 +47,12 @@ const createTag = async (req, res) => {
       return res.status(404).json({ message: "Blog not found" });
     }
 
-    // 🔹 find or create tag
+    //  find or create tag
     const [tag] = await Tag.findOrCreate({
       where: { name },
     });
 
-    // 🔥 attach tag to blog (THIS WILL INSERT INTO blogtags)
+    //  attach tag to blog (THIS WILL INSERT INTO blogtags)
     await blog.addTag(tag);
 
     res.status(201).json({

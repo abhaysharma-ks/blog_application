@@ -1,23 +1,20 @@
+// export default Navbar;
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
-  const navigate=useNavigate()
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const [error, setError] = useState("");
   const { user, logout } = useAuth();
+
   const handleLogout = async (e) => {
     e.preventDefault();
-
     try {
       await logout();
-      navigate("/")
+      navigate("/");
     } catch (error) {
       setError(error.response?.data?.message || "Logout failed");
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -47,24 +44,33 @@ const Navbar = () => {
             Articles
           </Link>
 
+          {/* --- ADMIN ONLY LINK --- */}
+          {user?.role === "admin" && (
+            <Link
+              to="/requests"
+              className="text-sm font-medium text-gray-600 hover:text-[#26d0ce] transition-colors"
+            >
+              Requests
+            </Link>
+          )}
+
           {user ? (
             /* --- LOGGED IN STATE --- */
             <div className="flex items-center space-x-4">
               <Link to="/profile" className="flex items-center space-x-2 group">
                 <div className="w-9 h-9 rounded-full bg-gray-200 border border-gray-200 flex items-center justify-center overflow-hidden group-hover:border-[#26d0ce] transition-all">
-                  {/* Placeholder Profile Icon */}
-                  <span className="text-xs font-bold text-gray-500">JD</span>
+                  <span className="text-xs font-bold text-gray-500">
+                    {user.name?.charAt(0) || "U"}
+                  </span>
                 </div>
-                <Link to="/profile">
                 <span className="text-sm font-medium text-gray-700 group-hover:text-[#26d0ce] hidden sm:block">
                   Profile
                 </span>
-                </Link>
               </Link>
 
               <button
-                onClick={handleLogout} // Toggle off for demo
-                className="text-sm font-semibold text-red-200 hover:text-red-600 cursor-pointer px-4 py-2"
+                onClick={handleLogout}
+                className="text-sm font-semibold text-red-400 hover:text-red-600 cursor-pointer px-4 py-2 transition-colors"
               >
                 Logout
               </button>

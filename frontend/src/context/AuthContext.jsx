@@ -12,7 +12,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // ✅ FIXED useEffect
+  
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -28,7 +28,7 @@ export const AuthProvider = ({ children }) => {
     fetchUser();
   }, []);
 
-  // 🔐 LOGIN
+  //  LOGIN
   const login = async (email, password) => {
     const res = await api.post("/auth/login", { email, password });
 
@@ -37,15 +37,15 @@ export const AuthProvider = ({ children }) => {
     return res.data.user;
   };
 
-  // 🆕 REGISTER
+  //  REGISTER
   const register = async (data) => {
     const res = await api.post("/auth/register", data);
 
-    setUser(res.data.user);
+    // setUser(res.data.user);
     return res.data.user;
   };
 
-  // 🚪 LOGOUT
+  //  LOGOUT
   const logout = async () => {
     await api.post("/auth/logout");
     setUser(null);

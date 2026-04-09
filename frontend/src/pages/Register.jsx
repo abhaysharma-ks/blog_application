@@ -52,7 +52,7 @@ const Register = () => {
           </div>
 
           {/* Central Illustration - Slightly different variant for Register */}
-          <div className="flex-grow flex items-center justify-center relative">
+          <div className="grow flex items-center justify-center relative">
             <div className="relative w-40 h-40 flex items-center justify-center">
               {/* Teal Left Half */}
               <div className="w-20 h-40 bg-[#26d0ce] rounded-l-full"></div>
@@ -128,25 +128,10 @@ const Register = () => {
               />
             </div>
 
-            <div className="flex items-center pt-2">
-              <input
-                type="checkbox"
-                className="accent-[#26d0ce] h-4 w-4"
-                id="terms"
-                checked={agreed}
-                onChange={(e) => setAgreed(e.target.checked)}
-              />
-              <label htmlFor="terms" className="ml-2 text-xs text-gray-500">
-                I agree to the{" "}
-                <span className="text-[#26d0ce] cursor-pointer">
-                  Terms & Conditions
-                </span>
-              </label>
-            </div>
 
             <button
               type="submit"
-              disabled={loading || !agreed}
+              disabled={loading}
               className="w-full py-3 bg-[#1e2d3b] text-white font-medium rounded shadow-lg hover:bg-[#2a3e52] transition-colors mt-4"
               onClick={handleSubmit}
             >

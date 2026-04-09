@@ -68,58 +68,6 @@ const Home = () => {
           ))}
         </div>
       </section>
-
-      {/* 3. FEATURED POSTS */}
-      <section className="py-24 max-w-7xl mx-auto px-6">
-        <div className="flex justify-between items-end mb-12">
-          <div>
-            <h2 className="text-3xl font-black text-[#1e2d3b]">Featured Stories</h2>
-            <div className="h-1 w-20 bg-[#26d0ce] mt-2"></div>
-          </div>
-          <button className="text-[#26d0ce] font-bold text-sm hover:underline">View all posts →</button>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-          {[
-            { title: "The Future of Minimalist Interfaces", tag: "Design", color: "bg-[#26d0ce]" },
-            { title: "Why React is Still King in 2026", tag: "Dev", color: "bg-[#1e2d3b]" },
-            { title: "Psychology of Color in UX", tag: "Strategy", color: "bg-teal-700" }
-          ].map((post, index) => (
-            <div key={index} className="group cursor-pointer">
-              <div className={`aspect-video ${post.color} rounded-2xl mb-6 overflow-hidden relative shadow-lg`}>
-                <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                  <span className="text-white font-bold border border-white px-4 py-2 rounded-full">Read Article</span>
-                </div>
-              </div>
-              <span className="text-[#26d0ce] text-xs font-black uppercase tracking-widest">{post.tag}</span>
-              <h3 className="text-xl font-bold text-[#1e2d3b] mt-2 group-hover:text-[#26d0ce] transition-colors">
-                {post.title}
-              </h3>
-              <p className="text-gray-400 text-sm mt-3 line-clamp-2">
-                Exploring the boundaries between physical interaction and digital canvas...
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* 4. NEWSLETTER CTA */}
-      <section className="py-20 px-6">
-        <div className="max-w-4xl mx-auto bg-gray-50 rounded-[40px] p-10 md:p-20 text-center border border-gray-100">
-          <h2 className="text-3xl font-black text-[#1e2d3b] mb-4">Don't miss a beat.</h2>
-          <p className="text-gray-500 mb-8">Get our weekly top 5 stories delivered to your inbox.</p>
-          <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-            <input 
-              type="email" 
-              placeholder="Email address"
-              className="flex-grow px-6 py-4 rounded-full border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#26d0ce]"
-            />
-            <button className="px-8 py-4 bg-[#26d0ce] text-white rounded-full font-bold shadow-md hover:bg-[#22bcb9] transition-all">
-              Subscribe
-            </button>
-          </div>
-        </div>
-      </section>
     </div>
   );
 };

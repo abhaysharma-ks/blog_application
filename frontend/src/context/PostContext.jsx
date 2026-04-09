@@ -6,6 +6,7 @@ const PostContext = createContext();
 export const PostProvider = ({ children }) => {
   const [post, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [blog,setBlog]=useState()
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -21,8 +22,28 @@ export const PostProvider = ({ children }) => {
     fetchPost();
   }, []);
 
+  // generate blog
+  const generate=async(data)=>{
+    const res=await api.post("/blog/create",data)
+    return res.data
+  }
+
+  // fetch blog
+  const fetchBlog=async(b_id)=>{
+    try {
+      const res=await api.get(`blog/blogdetail/${b_id}`)
+    setBlog(res.data)
+    return res.data
+    } catch (error) {
+      console.log("error fetching single blog",error)
+      setBlog(null)
+    }
+  }
+
+
+
   return (
-    <PostContext.Provider value={{ post }}>{children}</PostContext.Provider>
+    <PostContext.Provider value={{ post,generate,blog,fetchBlog}}>{children}</PostContext.Provider>
   );
 };
 

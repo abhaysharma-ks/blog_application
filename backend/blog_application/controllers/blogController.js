@@ -1,3 +1,4 @@
+const { where } = require("sequelize");
 const client = require("../config/redis");
 const Blog = require("../models/blogModel");
 
@@ -47,6 +48,24 @@ const approveBlog = async (req, res) => {
   }
 };
 
+const blog=async(req,res)=>{
+  try {
+    const {b_id}=req.params;
+
+    const blogDetails= await Blog.findOne({
+      where:{id:b_id}
+    })
+
+    if(!blogDetails){
+      return res.status(404).json({message:"blog not found"})
+    }
+    res.status(200).json(blogDetails)
+
+  } catch (error) {
+    res.status(500).json({message:error.message})
+  }
+}
+
 const getApprovedBlogs = async (req, res) => {
   try {
 
@@ -79,6 +98,21 @@ const getApprovedBlogs = async (req, res) => {
   }
 };
 
+const getAllPendingBlogs = async (req, res) => {
+  try {
+
+
+    // fetch from db
+    const blogs = await Blog.findAll({
+      where: { status: "pending" }
+    });
+
+    res.status(200).json(blogs);
+
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
 const edit_blog=async(req,res)=>{
   try {
@@ -148,4 +182,17 @@ const del_blog=async(req,res)=>{
   }
 }
 
-module.exports = { generateBlog, approveBlog, getApprovedBlogs, edit_blog, del_blog};
+const userBlog=async(req,res)=>{
+  try {
+    const user_id=req.user.id
+    
+    const blogs=await Blog.findAll({where:{user_id}})
+
+    res.status(200).json(blogs)
+  } catch (error) {
+    res.status(500).json({message:error.message})
+  }
+}
+
+
+module.exports = { generateBlog, approveBlog, getApprovedBlogs, edit_blog, del_blog, getAllPendingBlogs,blog,userBlog};

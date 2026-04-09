@@ -18,7 +18,7 @@ const Profile = () => {
         
         {/* Profile Header Card */}
         <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden mb-8">
-          <div className="h-32 bg-gradient-to-r from-[#1e2d3b] to-[#26d0ce]"></div>
+          <div className="h-32 bg-linear-to-r from-[#1e2d3b] to-[#26d0ce]"></div>
           <div className="px-8 pb-8">
             <div className="relative flex justify-between items-end -mt-12 mb-6">
               {/* Avatar */}
@@ -27,10 +27,6 @@ const Profile = () => {
                   {user?.name?.charAt(0) || "U"}
                 </div>
               </div>
-              {/* Edit Button */}
-              <button className="px-6 py-2 border border-gray-200 rounded-full text-sm font-semibold hover:bg-gray-50 transition-colors">
-                Edit Profile
-              </button>
             </div>
 
             <div className="space-y-1">
@@ -72,7 +68,7 @@ const Profile = () => {
           <div className="lg:col-span-2 space-y-4">
             <div className="flex items-center justify-between mb-2">
               <h2 className="text-xl font-bold text-[#1e2d3b]">Your Publications</h2>
-              <Link to="/create" className="text-sm font-bold text-[#26d0ce] hover:underline">Write New</Link>
+              <Link to="/write-new" className="text-sm font-bold text-[#26d0ce] hover:underline">Write New</Link>
             </div>
 
             {myBlogs.map((blog) => (
