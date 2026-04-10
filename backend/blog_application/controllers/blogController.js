@@ -1,198 +1,130 @@
-const { where } = require("sequelize");
-const client = require("../config/redis");
-const Blog = require("../models/blogModel");
+const blogService = require("../services/blogServices");
 
+// CREATE
 const generateBlog = async (req, res) => {
   try {
-    const { title, content } = req.body;
-
-    
-    if (!title || !content) {
-      return res.status(400).json({ message: "Title and content are required" });
-    }
-
-    
-    const blog = await Blog.create({
-      title,
-      content,
-      userId: req.user.id, 
+    const blog = await blogService.createBlog({
+      ...req.body,
+      userId: req.user.id,
     });
 
-    res.status(201).json({
+    return res.status(201).json({
       message: "Blog submitted for approval",
-      blog
+      blog,
     });
-
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(error.statusCode || 500).json({
+      message: error.message,
+    });
   }
 };
 
+// APPROVE
 const approveBlog = async (req, res) => {
-
-    //  validation
   try {
-    const { id } = req.params;
+    await blogService.approveBlogService(req.params.id);
 
-    const blog = await Blog.findByPk(id);
-    if (!blog) return res.status(404).json({ message: "Blog not found" });
-
-    blog.status = "approved";
-    await blog.save();
-    await client.del("approved_blogs")
-
-    res.status(200).json({ message: "Blog approved" });
-
+    return res.status(200).json({
+      message: "Blog approved",
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(error.statusCode || 500).json({
+      message: error.message,
+    });
   }
 };
 
-const blog=async(req,res)=>{
+// GET SINGLE BLOG
+const blog = async (req, res) => {
   try {
-    const {b_id}=req.params;
+    const data = await blogService.getBlogById(req.params.b_id);
 
-    const blogDetails= await Blog.findOne({
-      where:{id:b_id}
-    })
-
-    if(!blogDetails){
-      return res.status(404).json({message:"blog not found"})
-    }
-    res.status(200).json(blogDetails)
-
+    return res.status(200).json(data);
   } catch (error) {
-    res.status(500).json({message:error.message})
+    return res.status(error.statusCode || 500).json({
+      message: error.message,
+    });
   }
-}
+};
 
+// GET APPROVED BLOGS
 const getApprovedBlogs = async (req, res) => {
   try {
+    const blogs = await blogService.getApprovedBlogsService();
 
-    // check cache
-    const cached=await client.get("approved_blogs")
-    if(cached){
-      console.log("from redis")
-      return res.json(JSON.parse(cached))
-    }
-
-
-    // fetch from db
-    const blogs = await Blog.findAll({
-      where: { status: "approved" }
-    });
-
-    // store in redis
-    await client.set("approved_blogs",JSON.stringify(blogs),"EX",3600)
-    if(!blogs){
-        return res.status(400).json({
-            message:"no blogs found"
-        })
-    }
-
-
-    res.status(200).json(blogs);
-
+    return res.status(200).json(blogs);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
 
+// GET PENDING
 const getAllPendingBlogs = async (req, res) => {
   try {
+    const blogs = await blogService.getPendingBlogsService();
 
-
-    // fetch from db
-    const blogs = await Blog.findAll({
-      where: { status: "pending" }
-    });
-
-    res.status(200).json(blogs);
-
+    return res.status(200).json(blogs);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
 
-const edit_blog=async(req,res)=>{
+// EDIT
+const edit_blog = async (req, res) => {
   try {
-    const { id } = req.params; // blog id
-    const { title, content } = req.body;
+    const blog = await blogService.editBlogService({
+      id: req.params.id,
+      userId: req.user.id,
+      ...req.body,
+    });
 
-    // find blog
-    const blog = await Blog.findByPk(id);
-
-    if (!blog) {
-      return res.status(404).json({ message: "Blog not found" });
-    }
-
-    //  check ownership
-    if (blog.userId !== req.user.id) {
-      return res.status(403).json({ message: "You can only edit your own blog" });
-    }
-
-    // optional: prevent editing approved blogs
-    if (blog.status === "approved") {
-      return res.status(400).json({ message: "Approved blog cannot be edited" });
-    }
-
-    // update fields
-    if (title) blog.title = title;
-    if (content) blog.content = content;
-
-    await blog.save();
-    // await client.del("approved_blogs") 
-
-    res.status(200).json({
+    return res.status(200).json({
       message: "Blog updated successfully",
-      blog
+      blog,
+    });
+  } catch (error) {
+    return res.status(error.statusCode || 500).json({
+      message: error.message,
+    });
+  }
+};
+
+// DELETE
+const del_blog = async (req, res) => {
+  try {
+    await blogService.deleteBlogService({
+      id: req.params.id,
+      userId: req.user.id,
     });
 
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-}
-
-const del_blog=async(req,res)=>{
-  try {
-    const { id } = req.params;
-
-    
-    const blog = await Blog.findByPk(id);
-
-    if (!blog) {
-      return res.status(404).json({ message: "Blog not found" });
-    }
-
-    
-    if (blog.userId !== req.user.id) {
-      return res.status(403).json({ message: "You can only delete your own blog" });
-    }
-
-   
-    await blog.destroy();
-    await client.del("approved_blogs")
-
-    res.status(200).json({
-      message: "Blog deleted successfully"
+    return res.status(200).json({
+      message: "Blog deleted successfully",
     });
-
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(error.statusCode || 500).json({
+      message: error.message,
+    });
   }
-}
+};
 
-const userBlog=async(req,res)=>{
+// USER BLOGS
+const userBlog = async (req, res) => {
   try {
-    const user_id=req.user.id
-    
-    const blogs=await Blog.findAll({where:{user_id}})
+    const blogs = await blogService.getUserBlogsService(req.user.id);
 
-    res.status(200).json(blogs)
+    return res.status(200).json(blogs);
   } catch (error) {
-    res.status(500).json({message:error.message})
+    return res.status(500).json({ message: error.message });
   }
-}
+};
 
-
-module.exports = { generateBlog, approveBlog, getApprovedBlogs, edit_blog, del_blog, getAllPendingBlogs,blog,userBlog};
+module.exports = {
+  generateBlog,
+  approveBlog,
+  blog,
+  getApprovedBlogs,
+  getAllPendingBlogs,
+  edit_blog,
+  del_blog,
+  userBlog,
+};

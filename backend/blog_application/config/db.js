@@ -3,7 +3,7 @@ require('dotenv').config()
 
 
 const sequelize = new Sequelize('blogapplication', 'postgres', process.env.PGPass, {
-  host: 'localhost',
+  host: process.env.DB_HOST || 'localhost',
   dialect: 'postgres',
   logging:false
 });

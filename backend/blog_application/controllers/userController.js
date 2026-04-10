@@ -1,9 +1,17 @@
+const Blog = require("../models/blogModel");
 const User = require("../models/userModel");
 
 const getProfile = async (req, res) => {
   try {
     const user = await User.findByPk(req.user.id, {
-      attributes: { exclude: ["password"] }
+      attributes: { exclude: ["password"] },
+      include:[
+        {
+          model:Blog,
+          attributes:["id","title", "content", "createdAt","status"]
+        }
+      ]
+
     });
 
     if(!user){

@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 const Profile = () => {
   const { user } = useAuth();
 
-  // Mock data for blogs - replace with your actual API data later
   const myBlogs = [
     { id: 1, title: "The Future of React 2026", date: "Oct 12, 2025", views: "1.2k" },
     { id: 2, title: "Mastering Tailwind CSS Transitions", date: "Sep 28, 2025", views: "850" },

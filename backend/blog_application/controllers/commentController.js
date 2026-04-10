@@ -1,48 +1,37 @@
-const Comment = require("../models/commentModel");
+const commentService = require("../services/commentService");
 
+// ADD COMMENT
 const addComment = async (req, res) => {
   try {
-    const { content, blogId, parentId } = req.body;
-
-    if(!content || !blogId ){
-        return res.status(500).json({
-            message:"content and blog id is required"
-        })
-    }
-    // console.log(req.user.id)
-    const comment = await Comment.create({
-      content,
-      blogId,
+    const comment = await commentService.createCommentService({
+      ...req.body,
       userId: req.user.id,
-      parentId: parentId || null
     });
 
-    res.status(201).json(comment);
-
+    return res.status(201).json(comment);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(error.statusCode || 500).json({
+      message: error.message,
+    });
   }
 };
 
+// GET COMMENTS
 const getComments = async (req, res) => {
   try {
-    const { blog_id } = req.params;
+    const comments = await commentService.getCommentsByBlogService(
+      req.params.blogId,
+    );
 
-    if(!blog_id){
-        return res.status(500).json({
-            message:"blog id is required"
-        })
-    }
-
-    const comments = await Comment.findAll({
-      where: { blog_id }
-    });
-
-    res.status(200).json(comments);
-
+    return res.status(200).json(comments);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({
+      message: error.message,
+    });
   }
 };
 
-module.exports = { addComment, getComments };
+module.exports = {
+  addComment,
+  getComments,
+};

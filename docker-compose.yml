@@ -1,0 +1,43 @@
+services:
+  # Database: postgres
+  db:
+    image: postgres:15-alpine
+    container_name: postgres_db
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=Abhay123
+      - POSTGRES_DB=blogapplication  
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # Backend: Node.js
+  backend:
+    build: ./backend/blog_application
+    container_name: backend_api
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - JWT_SECRET=mysecret
+      - PGPass=Abhay123
+      - DB_HOST=db 
+      - redis_url=rediss://default:gQAAAAAAAR8rAAIncDFjN2Q5ODNlYjYyMWQ0OGJlOGM2NzRiN2Q2MjhkY2QzYXAxNzM1MTU@engaged-stag-73515.upstash.io:6379
+    depends_on:
+      - db
+
+  # Frontend: Vite/Nginx
+  frontend:
+    build: ./frontend
+    container_name: frontend_web
+    restart: always
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:

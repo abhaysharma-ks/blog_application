@@ -2,10 +2,12 @@ const express = require("express");
 const authMiddleware = require("../middlewares/authMiddleware");
 const { approveBlog, getApprovedBlogs, generateBlog, edit_blog, del_blog, getAllPendingBlogs, blog, userBlog } = require("../controllers/blogController");
 const roleMiddleware = require("../middlewares/roleMiddleware");
+const { Validate } = require("../middlewares/validatorMiddleware");
+const { blogSchema } = require("../validatior/blog.validation.schema");
 const router = express.Router();
 
 // Create blog (user)
-router.post("/create", authMiddleware, generateBlog);
+router.post("/create", authMiddleware,Validate(blogSchema), generateBlog);
 
 // get a blog
 router.get("/blogdetail/:b_id", blog)
@@ -23,7 +25,7 @@ router.get("/allPending",authMiddleware,roleMiddleware("admin"),getAllPendingBlo
 router.get("/getall",authMiddleware,userBlog)
 
 // edit blog
-router.post("/edit", authMiddleware, edit_blog)
+router.post("/edit", authMiddleware,Validate(blogSchema), edit_blog)
 
 // delete blog
 router.delete("/delete",authMiddleware, del_blog)

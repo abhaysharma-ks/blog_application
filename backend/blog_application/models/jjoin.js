@@ -12,3 +12,4 @@ Tag.belongsToMany(Blog, {
   through: BlogTag,
   foreignKey: "tagId",
 });
+
